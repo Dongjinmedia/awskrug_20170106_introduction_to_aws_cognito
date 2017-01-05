@@ -1,0 +1,18 @@
+@startuml
+actor App as app
+node "Cognito Federated Identity" as cognito
+node "Authentication providers" as auth_providers
+node "Security Token Service" as sts
+node "IAM Directory" as iam_dir
+cloud "AWS Services" as aws_service
+
+app <-left-> auth_providers : Ask to provide id token to Cognito
+app <--> sts : Get STS credential token
+app <--> cognito : Get cognito credential token
+app <--> aws_service : Use service
+auth_providers <--> cognito : Confirm id token
+cognito <--> iam_dir : Manage IAM role of user
+cognito <--> sts : Confirm cognito credential token
+sts <--> iam_dir : Get role of temporary token
+aws_service <--> sts : Ask credential of user
+@enduml
